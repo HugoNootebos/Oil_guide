@@ -231,6 +231,8 @@ while running:
                     print(players[0].name + " WINS!")
                     running = False
                 break
+    elif inp == "show":
+        show_stats(turn)
     elif inp == "q":
         running = False
     elif inp == "help":
@@ -248,7 +250,6 @@ while running:
         if country in countries and country.owner != players[turn]:
             country.owner = players[turn]
             print(players[turn].name + " takes " + country.name + "\n")
-            show_stats(turn)
         else:
             print(players[turn].name + " already owns " + country.name)
         print()
