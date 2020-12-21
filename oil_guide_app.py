@@ -243,6 +243,7 @@ while running:
         print(" [countries]")
         print(" [develop]")
         print(" [nuke]")
+        print(" [show]")
         print(" [elimination] to remove another player")
         print(" [q] to quit\n")
     else:
