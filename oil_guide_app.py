@@ -29,13 +29,13 @@ class Continent:
         self.size = size
         self.card_bonus = card_bonus
 
-continents = [i for i in range(6)]
-continents[0] = Continent("North-America", size = 9)
-continents[1] = Continent("South-America", size = 4, card_bonus = 0)
-continents[2] = Continent("Europe", size = 8)
-continents[3] = Continent("Africa", size = 6)
-continents[4] = Continent("Asia", size = 11, card_bonus = 2)
-continents[5] = Continent("Oceania", size = 4, card_bonus = 0)
+continents = list()
+continents.append(Continent("North-America", size = 9))
+continents.append(Continent("South-America", size = 4, card_bonus = 0))
+continents.append(Continent("Europe", size = 8))
+continents.append(Continent("Africa", size = 6))
+continents.append(Continent("Asia", size = 11, card_bonus = 2))
+continents.append(Continent("Oceania", size = 4, card_bonus = 0))
 
 
 class Country:
@@ -89,7 +89,7 @@ countries[32] = Country("Brazilië", continent = continents[1], steel = 1, wood 
 countries[33] = Country("Peru", continent = continents[1], steel = 3, food = 1, troops = 1)
 countries[34] = Country("Alaska", continent = continents[0], food = 1, troops = 1, steel = 1, oil = 1)
 countries[35] = Country("New York", continent = continents[0], food = 4)
-countries[36] = Country("Californië", continent = continents[0], food = 2, troops = 1, wood = 1)
+countries[36] = Country("Los Angeles", continent = continents[0], food = 2, troops = 1, wood = 1)
 countries[37] = Country("Canada", continent = continents[0], wood = 2, oil = 1, nuclear = 1)
 countries[38] = Country("Mexico", continent = continents[0], food = 1, troops = 1, wood = 1)
 countries[39] = Country("Groenland", continent = continents[0], food = 2, oil = 1)
@@ -142,7 +142,7 @@ def show_stats(turn):
     print(" steel:   " + str(players[turn].steel))
     print(" oil:     " + str(players[turn].oil))
     print(" uranium: " + str(players[turn].nuclear))
-    print(" troops:  " + str(int(players[turn].troops/3)) + "\n")
+    print(" troops:  " + str(3 + int(players[turn].troops/3)) + "\n")
 
 def nuke():
     nuked_country = guess_country(input("Which country is nuked? "))
@@ -214,7 +214,6 @@ while running:
         country_lost = guess_country(input("Which country was lost? "))
         print(players[turn].name + " lost " + country_lost.name + "\n")
         country_lost.owner = default_player
-        show_stats(turn)
     elif inp == "countries":
         for i in range(len(countries)):
             if countries[i].owner == players[turn]:
@@ -237,7 +236,7 @@ while running:
         running = False
     elif inp == "help":
         print("commands:")
-        print(" [enter] to end turn")
+        print(" [] to end turn")
         print(" [country name] to conquer a country")
         print(" [lose] to lose a country")
         print(" [countries]")
@@ -254,4 +253,3 @@ while running:
         else:
             print(players[turn].name + " already owns " + country.name)
         print()
-
