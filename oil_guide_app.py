@@ -40,8 +40,8 @@ continents.append(Continent("Oceania", size = 4, card_bonus = 0))
 
 
 class Country:
-    def __init__(self, name, food = 0, wood = 0, steel = 0, nuclear = 0, oil = 0, troops = 0, owner = default_player, radioactive = 0, developed = 0, nuked_by = Player("none"), continent = Continent("none"):
-        self.name = name
+    def __init__(self, name, nuked_by = Player("none"), continent = Continent(name = "none", size = 43), food = 0, wood = 0, steel = 0, nuclear = 0, oil = 0, troops = 0, owner = default_player, radioactive = 0, developed = 0):
+        self.name ="blank country"
         self.food = food
         self.wood = wood
         self.steel = steel
@@ -51,6 +51,7 @@ class Country:
         self.owner = owner
         self.radioactive = radioactive
         self.developed = developed
+        self.nuked_by = nuked_by
         self.continent = continent
 
 countries = [i for i in range(42)]
@@ -176,7 +177,7 @@ while running:
         turn = (turn + 1) % player_num
         turn_num += 1
         event_card += 1
-        print(players[turn].name + " starts TURN " + turn_num + ")")
+        print(players[turn].name + " starts TURN " + str(turn_num) + ")")
         if event_card == player_num + 1:
             print(" Draw an event card")
             event_card = 0
