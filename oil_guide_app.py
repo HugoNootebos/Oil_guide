@@ -119,6 +119,7 @@ def guess_country(inp):
     return out
 
 def show_stats(turn):
+    country_num = 0
     players[turn].food = 0
     players[turn].wood = 0
     players[turn].steel = 0
@@ -128,6 +129,7 @@ def show_stats(turn):
     for i in range(len(countries)):
         if countries[i].owner == players[turn] and countries[i].radioactive == 0:
             n = 1
+            country_num += 1
             if countries[i].developed == 2:
                 n = 2
             elif countries[i].developed == 1:
@@ -138,7 +140,14 @@ def show_stats(turn):
             players[turn].oil += n*countries[i].oil
             players[turn].nuclear += n*countries[i].nuclear
             players[turn].troops += countries[i].troops
-    print(players[turn].name, "'s resources per round:")
+    print("countries: " + str(country_num))
+    cont_lst = check_for_continents(turn)
+    cont_str = ""
+    if len(cont_lst) != 0:
+        for i in range(len(cont_lst)):
+            cont_str += cont_lst[i] + ", "
+        print("continents: " + cont_str[0:-2])
+    print(players[turn].name + "'s resources per round:")
     print(" food:    " + str(players[turn].food))
     print(" wood:    " + str(players[turn].wood))
     print(" steel:   " + str(players[turn].steel))
@@ -210,13 +219,28 @@ while running:
     elif inp == "nuke":
         nuke()
     elif inp == "develop" or inp == "build":
-        country = guess_country(input("Which country is being developed? "))
-        print(" " + players[turn].name + " starts developing " + country.name)
-        country.developed = 1
+        develop_country = guess_country(input("Which country is being developed? "))
+        print(" " + players[turn].name + " starts developing " + develop_country.name)
+        develop_country.developed = 1
     elif inp == "lose" or inp == "lost":
         country_lost = guess_country(input("Which country was lost? "))
         print(" " + players[turn].name + " lost " + country_lost.name)
         country_lost.owner = default_player
+    elif inp == "lose many":
+        print(" insert [exit] to exit loop")
+        while True:
+            country_lost_guess = input("Which country was lost? "))
+            if country_lost_guess in ["q", "exit", "quit"]:
+                break
+            country_lost = guess_country(country_lost_guess)
+            print(" " + players[turn].name + " lost " + country_lost.name)
+            country_lost.owner = default_player
+    elif inp == "reset":
+        for i in range(len(countries)):
+            if countries[i].owner == players[turn]:
+                countries[i].owner = default_player
+    elif inp == "undo":
+        country.owner == default_player
     elif inp == "countries":
         for i in range(len(countries)):
             if countries[i].owner == players[turn]:
@@ -246,12 +270,12 @@ while running:
         print("  tank:   20 steel")
         print("  fort:   10/15/20 wood")
     elif inp == "cards" or inp == "card":
-        print(" troops:  x1.5")
-        print(" food:    x2.5")
-        print(" wood:    x 3")
-        print(" steel:   x 2")
-        print(" oil:     x 2")
-        print(" uranium: x 1")
+        print(" troops:  x 1.5")
+        print(" food:    x 2.5")
+        print(" wood:    x  3")
+        print(" steel:   x  2")
+        print(" oil:     x  2")
+        print(" uranium: x  1")
     elif inp == "q":
         running = False
     elif inp == "help":
@@ -259,6 +283,9 @@ while running:
         print(" [] to end turn")
         print(" [country name] to conquer a country")
         print(" [lose] to lose a country")
+        print(" [lose many] to lose multiple countries")
+        print(" [reset] to lose all countries")
+        print(" [undo]")
         print(" [countries]")
         print(" [develop]")
         print(" [nuke]")
