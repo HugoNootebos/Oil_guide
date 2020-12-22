@@ -235,6 +235,23 @@ while running:
                 break
     elif inp == "show":
         show_stats(turn)
+    elif inp == "shop":
+        print(" Anytime")
+        print("  bridge: 10 wood")
+        print("  rails:  2  wood + 1 steel")
+        print("  nuke:   5  uranium")
+        print(" Reinforcement Phase")
+        print("  boat:   15 wood")
+        print("  plane:  10 steel")
+        print("  tank:   20 steel")
+        print("  fort:   10/15/20 wood")
+    elif inp == "cards" or inp == "card":
+        print(" troops:  x1.5")
+        print(" food:    x2.5")
+        print(" wood:    x 3")
+        print(" steel:   x 2")
+        print(" oil:     x 2")
+        print(" uranium: x 1")
     elif inp == "q":
         running = False
     elif inp == "help":
@@ -246,6 +263,8 @@ while running:
         print(" [develop]")
         print(" [nuke]")
         print(" [show]")
+        print(" [cards] to see card convertion factors")
+        print(" [shop]")
         print(" [elimination] to remove another player")
         print(" [q] to quit")
     else:
