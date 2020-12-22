@@ -41,7 +41,7 @@ continents.append(Continent("Oceania", size = 4, card_bonus = 0))
 
 class Country:
     def __init__(self, name, nuked_by = Player("none"), continent = Continent(name = "none", size = 43), food = 0, wood = 0, steel = 0, nuclear = 0, oil = 0, troops = 0, owner = default_player, radioactive = 0, developed = 0):
-        self.name ="blank country"
+        self.name = name
         self.food = food
         self.wood = wood
         self.steel = steel
@@ -152,7 +152,7 @@ def nuke():
         if countries[i] == nuked_country:
             countries[i].radioactive += 3
             countries[i].nuked_by = players[turn]
-            print(" " + countries[i].name + "'s radioactivity is now 3")
+            print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactivity))
             break
 
 def check_for_continents(turn):
@@ -177,7 +177,7 @@ while running:
         turn = (turn + 1) % player_num
         turn_num += 1
         event_card += 1
-        print(players[turn].name + " starts TURN " + str(turn_num) + ")")
+        print(players[turn].name + " starts TURN " + str(turn_num))
         if event_card == player_num + 1:
             print(" Draw an event card")
             event_card = 0
@@ -247,13 +247,12 @@ while running:
         print(" [nuke]")
         print(" [show]")
         print(" [elimination] to remove another player")
-        print(" [q] to quit\n")
+        print(" [q] to quit")
     else:
         country = guess_country(inp)
         if country in countries and country.owner != players[turn]:
             country.owner = players[turn]
-            print(" " + players[turn].name + " takes " + country.name + "\n")
-        elif country in countries:
-            print(" " + players[turn].name + " already owns " + country.name)
+            print(" " + players[turn].name + " takes " + country.name)
         else:
-            print(" This is not a country")
+            print(" " + players[turn].name + " already owns " + country.name)
+
