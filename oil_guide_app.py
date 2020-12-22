@@ -229,7 +229,7 @@ while running:
     elif inp == "lose many":
         print(" insert [exit] to exit loop")
         while True:
-            country_lost_guess = input("Which country was lost? "))
+            country_lost_guess = input("Which country was lost? ")
             if country_lost_guess in ["q", "exit", "quit"]:
                 break
             country_lost = guess_country(country_lost_guess)
@@ -239,15 +239,17 @@ while running:
         for i in range(len(countries)):
             if countries[i].owner == players[turn]:
                 countries[i].owner = default_player
+        print(players[turn].name + "'s countries have been reset")
     elif inp == "undo":
-        country.owner == default_player
+        country.owner = default_player
+        print((" " + players[turn].name + " lost " + country.name)
     elif inp == "countries":
         for i in range(len(countries)):
             if countries[i].owner == players[turn]:
                 print(" " + countries[i].name)
         print()
     elif inp == "elimination":
-        eliminated_player = input("Who has been eliminated? ")
+        eliminated_player = input(" Who has been eliminated? ")
         for i in range(player_num):
             if eliminated_player.lower() == players[i].name.lower():
                 players.remove(players[i])
@@ -299,6 +301,8 @@ while running:
         if country in countries and country.owner != players[turn]:
             country.owner = players[turn]
             print(" " + players[turn].name + " takes " + country.name)
+        elif country.name == "none":
+            print(" this is not a country")
         else:
             print(" " + players[turn].name + " already owns " + country.name)
 
