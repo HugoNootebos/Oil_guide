@@ -161,7 +161,7 @@ def nuke():
         if countries[i] == nuked_country:
             countries[i].radioactive += 3
             countries[i].nuked_by = players[turn]
-            print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactivity))
+            print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactive))
             break
 
 def check_for_continents(turn):
@@ -182,127 +182,130 @@ delayed_develop = False
 
 while running:
     inp = input()
-    if inp == "":
-        turn = (turn + 1) % player_num
-        turn_num += 1
-        event_card += 1
-        print(players[turn].name + " starts TURN " + str(turn_num))
-        if event_card == player_num + 1:
-            print(" Draw an event card")
-            event_card = 0
-        players_continents = check_for_continents(turn)
-        if players_continents != []:
-            card_bonus = 0
-            continent_names = ""
-            for i in range(len(players_continents)):
-                card_bonus += players_continents[i].card_bonus
-                continent_names += players_continents[i].name
-                if i != len(players_continents) - 1:
-                    continent_names += " and "
-            print(" " + players[turn].name + " gets " + str(card_bonus) + " cards for controlling " + continent_names)
-        for i in range(len(countries)):
-            if countries[i].developed == 1 and countries[i].owner == players[turn]:
-                if countries[i].continent in players_continents:
-                    countries[i].developed = 2
-                    print(" " + countries[i].name + " is now developed (instant production)")
-                else:
-                    delayed_develop = True
-                    delayed_develop_country = countries[i]
-                    print(" " + countries[i].name + " is now developed (no production)")
-            if countries[i].radioactive > 0 and countries[i].nuked_by == players[turn]:
-                countries[i].radioactive -= 1
-                print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactive))
-        show_stats(turn)
-        if delayed_develop:
-            delayed_develop_country.developed = 2
-            delayed_develop = False
-    elif inp == "nuke":
-        nuke()
-    elif inp == "develop" or inp == "build":
-        develop_country = guess_country(input("Which country is being developed? "))
-        print(" " + players[turn].name + " starts developing " + develop_country.name)
-        develop_country.developed = 1
-    elif inp == "lose" or inp == "lost":
-        country_lost = guess_country(input("Which country was lost? "))
-        print(" " + players[turn].name + " lost " + country_lost.name)
-        country_lost.owner = default_player
-    elif inp == "lose many":
-        print(" insert [exit] to exit loop")
-        while True:
-            country_lost_guess = input("Which country was lost? ")
-            if country_lost_guess in ["q", "exit", "quit"]:
-                break
-            country_lost = guess_country(country_lost_guess)
+    try:
+        if inp == "":
+            turn = (turn + 1) % player_num
+            turn_num += 1
+            event_card += 1
+            print(players[turn].name + " starts TURN " + str(turn_num))
+            if event_card == player_num + 1:
+                print(" Draw an event card")
+                event_card = 0
+            players_continents = check_for_continents(turn)
+            if players_continents != []:
+                card_bonus = 0
+                continent_names = ""
+                for i in range(len(players_continents)):
+                    card_bonus += players_continents[i].card_bonus
+                    continent_names += players_continents[i].name
+                    if i != len(players_continents) - 1:
+                        continent_names += " and "
+                print(" " + players[turn].name + " gets " + str(card_bonus) + " cards for controlling " + continent_names)
+            for i in range(len(countries)):
+                if countries[i].developed == 1 and countries[i].owner == players[turn]:
+                    if countries[i].continent in players_continents:
+                        countries[i].developed = 2
+                        print(" " + countries[i].name + " is now developed (instant production)")
+                    else:
+                        delayed_develop = True
+                        delayed_develop_country = countries[i]
+                        print(" " + countries[i].name + " is now developed (no production)")
+                if countries[i].radioactive > 0 and countries[i].nuked_by == players[turn]:
+                    countries[i].radioactive -= 1
+                    print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactive))
+            show_stats(turn)
+            if delayed_develop:
+                delayed_develop_country.developed = 2
+                delayed_develop = False
+        elif inp == "nuke":
+            nuke()
+        elif inp == "develop" or inp == "build":
+            develop_country = guess_country(input("Which country is being developed? "))
+            print(" " + players[turn].name + " starts developing " + develop_country.name)
+            develop_country.developed = 1
+        elif inp == "lose" or inp == "lost":
+            country_lost = guess_country(input("Which country was lost? "))
             print(" " + players[turn].name + " lost " + country_lost.name)
             country_lost.owner = default_player
-    elif inp == "reset":
-        for i in range(len(countries)):
-            if countries[i].owner == players[turn]:
-                countries[i].owner = default_player
-        print(players[turn].name + "'s countries have been reset")
-    elif inp == "undo":
-        country.owner = default_player
-        print(" " + players[turn].name + " lost " + country.name)
-    elif inp == "countries":
-        for i in range(len(countries)):
-            if countries[i].owner == players[turn]:
-                print(" " + countries[i].name)
-        print()
-    elif inp == "elimination":
-        eliminated_player = input(" Who has been eliminated? ")
-        for i in range(player_num):
-            if eliminated_player.lower() == players[i].name.lower():
-                players.remove(players[i])
-                player_num -= 1
-                print(" " + eliminated_player + " was eliminated\n")
-                if player_num == 1:
-                    print(players[0].name + " WINS!")
-                    running = False
-                break
-    elif inp == "show":
-        show_stats(turn)
-    elif inp == "shop":
-        print(" Anytime")
-        print("  bridge: 10 wood")
-        print("  rails:  2  wood + 1 steel")
-        print("  nuke:   5  uranium")
-        print(" Reinforcement Phase")
-        print("  boat:   15 wood")
-        print("  plane:  10 steel")
-        print("  tank:   20 steel")
-        print("  fort:   10/15/20 wood")
-    elif inp == "cards" or inp == "card":
-        print(" troops:  x 1.5")
-        print(" food:    x 2.5")
-        print(" wood:    x  3")
-        print(" steel:   x  2")
-        print(" oil:     x  2")
-        print(" uranium: x  1")
-    elif inp == "q":
-        running = False
-    elif inp == "help":
-        print("commands:")
-        print(" [] to end turn")
-        print(" [country name] to conquer a country")
-        print(" [lose] to lose a country")
-        print(" [lose many] to lose multiple countries")
-        print(" [reset] to lose all countries")
-        print(" [undo] to lose a country that was just obtained")
-        print(" [countries] to see current player's countries")
-        print(" [show] to see current player's resource production")
-        print(" [develop] to start developing a country (x2 production)")
-        print(" [nuke] to indicate a country has been nuked")
-        print(" [cards] to see card conversion factors")
-        print(" [shop] to see shop")
-        print(" [elimination] to remove a player")
-        print(" [q] to quit")
-    else:
-        country = guess_country(inp)
-        if country in countries and country.owner != players[turn]:
-            country.owner = players[turn]
-            print(" " + players[turn].name + " takes " + country.name)
-        elif country.name == "none":
-            print(" this is not a country or command. Insert [help] for commands")
+        elif inp == "lose many":
+            print(" insert [exit] to exit loop")
+            while True:
+                country_lost_guess = input("Which country was lost? ")
+                if country_lost_guess in ["q", "exit", "quit"]:
+                    break
+                country_lost = guess_country(country_lost_guess)
+                print(" " + players[turn].name + " lost " + country_lost.name)
+                country_lost.owner = default_player
+        elif inp == "reset":
+            for i in range(len(countries)):
+                if countries[i].owner == players[turn]:
+                    countries[i].owner = default_player
+            print(players[turn].name + "'s countries have been reset")
+        elif inp == "undo":
+            country.owner = default_player
+            print(" " + players[turn].name + " lost " + country.name)
+        elif inp == "countries":
+            for i in range(len(countries)):
+                if countries[i].owner == players[turn]:
+                    print(" " + countries[i].name)
+            print()
+        elif inp == "elimination":
+            eliminated_player = input(" Who has been eliminated? ")
+            for i in range(player_num):
+                if eliminated_player.lower() == players[i].name.lower():
+                    players.remove(players[i])
+                    player_num -= 1
+                    print(" " + eliminated_player + " was eliminated\n")
+                    if player_num == 1:
+                        print(players[0].name + " WINS!")
+                        running = False
+                    break
+        elif inp == "show":
+            show_stats(turn)
+        elif inp == "shop":
+            print(" Anytime")
+            print("  bridge: 10 wood")
+            print("  rails:  2  wood + 1 steel")
+            print("  nuke:   5  uranium")
+            print(" Reinforcement Phase")
+            print("  boat:   15 wood")
+            print("  plane:  10 steel")
+            print("  tank:   20 steel")
+            print("  fort:   10/15/20 wood")
+        elif inp == "cards" or inp == "card":
+            print(" troops:  x 1.5")
+            print(" food:    x 2.5")
+            print(" wood:    x  3")
+            print(" steel:   x  2")
+            print(" oil:     x  2")
+            print(" uranium: x  1")
+        elif inp == "q":
+            running = False
+        elif inp == "help":
+            print("commands:")
+            print(" [] to end turn")
+            print(" [country name] to conquer a country")
+            print(" [lose] to lose a country")
+            print(" [lose many] to lose multiple countries")
+            print(" [reset] to lose all countries")
+            print(" [undo] to lose a country that was just obtained")
+            print(" [countries] to see current player's countries")
+            print(" [show] to see current player's resource production")
+            print(" [develop] to start developing a country (x2 production)")
+            print(" [nuke] to indicate a country has been nuked")
+            print(" [cards] to see card conversion factors")
+            print(" [shop] to see shop")
+            print(" [elimination] to remove a player")
+            print(" [q] to quit")
         else:
-            print(" " + players[turn].name + " already owns " + country.name)
+            country = guess_country(inp)
+            if country in countries and country.owner != players[turn]:
+                country.owner = players[turn]
+                print(" " + players[turn].name + " takes " + country.name)
+            elif country.name == "none":
+                print(" this is not a country or command. Insert [help] for commands")
+            else:
+                print(" " + players[turn].name + " already owns " + country.name)
+    except:
+        pass
 
