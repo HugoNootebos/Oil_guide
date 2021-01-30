@@ -179,6 +179,7 @@ show_stats(turn)
 
 running = True
 delayed_develop = False
+develop_country = countries[0]
 
 while running:
     inp = input()
@@ -221,8 +222,14 @@ while running:
             nuke()
         elif inp == "develop" or inp == "build":
             develop_country = guess_country(input("Which country is being developed? "))
-            print(" " + players[turn].name + " starts developing " + develop_country.name)
-            develop_country.developed = 1
+            if develop_country.owner == players[turn]:
+                print(" " + players[turn].name + " starts developing " + develop_country.name)
+                develop_country.developed = 1
+        elif inp == "undevelop":
+            undevelop_country = guess_country(input("Which country is being undeveloped? "))
+            if undevelop_country.owner == players[turn]:
+                print(" " + undevelop_country.name + " is now undeveloped ")
+                undevelop_country.developed = 0
         elif inp == "lose" or inp == "lost":
             country_lost = guess_country(input("Which country was lost? "))
             print(" " + players[turn].name + " lost " + country_lost.name)
@@ -249,7 +256,11 @@ while running:
                 if countries[i].owner == players[turn]:
                     print(" " + countries[i].name)
             print()
-        elif inp == "elimination":
+        elif inp == "produce":
+            for i in range(len(countries)):
+                if countries[i].owner == players[turn]:
+                    print(" " + countries[i].name + ": food: " + str(countries[i].food) + ", wood: " + str(countries[i].wood) + ", steel: " + str(countries[i].steel) + ", uranium: " + str(countries[i].nuclear) + ", oil: " + str(countries[i].oil) + ", helmets: " + str(countries[i].troops) + ", developed: " + str(countries[i].developed in [1,2] + " (" + countries[i].developed + ")"))
+        elif inp in ["elimination", "eliminate", "eliminated"]:
             eliminated_player = input(" Who has been eliminated? ")
             for i in range(player_num):
                 if eliminated_player.lower() == players[i].name.lower():
@@ -290,12 +301,14 @@ while running:
             print(" [reset] to lose all countries")
             print(" [undo] to lose a country that was just obtained")
             print(" [countries] to see current player's countries")
+            print(" [produce] to see what each country produces")
             print(" [show] to see current player's resource production")
             print(" [develop] to start developing a country (x2 production)")
+            print(" [undevelop] to undevelop a country")
             print(" [nuke] to indicate a country has been nuked")
             print(" [cards] to see card conversion factors")
             print(" [shop] to see shop")
-            print(" [elimination] to remove a player")
+            print(" [eliminate] to remove a player")
             print(" [q] to quit")
         else:
             country = guess_country(inp)
