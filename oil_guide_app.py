@@ -1,4 +1,5 @@
 import numpy as np
+from random import randint
 
 class Player:
     def __init__(self, name, food = 0, wood = 0, steel = 0, nuclear = 0, oil = 0, troops = 0):
@@ -15,9 +16,6 @@ print("WELCOME TO THE OIL GUIDE APP")
 print("insert [help] to view commands\n")
 players = []
 player_num = int(input("How many players? "))
-for i in range(player_num):
-    players += [Player(input("Player " + str(i + 1) + "'s name? "))]
-print()
 turn = 0
 turn_num = 1
 event_card = 0
@@ -102,6 +100,11 @@ country_names = []
 for i in range(len(countries)):
     country_names += [countries[i].name]
 
+if player_num == 3:
+    starting_countries = [countries[8], countries[41], countries[21]]
+for i in range(player_num):
+    players += [Player(input("Player " + str(i + 1) + "'s name? "))]
+print()
 
 def guess_country(inp):
     out = Country("none")
@@ -157,12 +160,9 @@ def show_stats(turn):
 
 def nuke():
     nuked_country = guess_country(input("Which country is nuked? "))
-    for i in range(len(countries)):
-        if countries[i] == nuked_country:
-            countries[i].radioactive += 3
-            countries[i].nuked_by = players[turn]
-            print(" " + countries[i].name + "'s radioactivity is now " + str(countries[i].radioactive))
-            break
+    nuked_country.radioactive += 3
+    nuked_country.nuked_by = players[turn]
+    print(" " + nuked_country.name + "'s radioactivity is now " + str(nuked_country.radioactive))
 
 def check_for_continents(turn):
     lst = []  #list of each of owner's country's continent affiliation
@@ -222,9 +222,8 @@ while running:
             nuke()
         elif inp == "develop" or inp == "build":
             develop_country = guess_country(input("Which country is being developed? "))
-            if develop_country.owner == players[turn]:
-                print(" " + players[turn].name + " starts developing " + develop_country.name)
-                develop_country.developed = 1
+            print(" " + players[turn].name + " starts developing " + develop_country.name)
+            develop_country.developed = 1
         elif inp == "undevelop":
             undevelop_country = guess_country(input("Which country is being undeveloped? "))
             if undevelop_country.owner == players[turn]:
@@ -248,13 +247,13 @@ while running:
                 if countries[i].owner == players[turn]:
                     countries[i].owner = default_player
             print(players[turn].name + "'s countries have been reset")
-        elif inp == "undo":
+        elif inp in ["undo", "l"]:
             country.owner = default_player
             print(" " + players[turn].name + " lost " + country.name)
         elif inp == "countries":
             for i in range(len(countries)):
                 if countries[i].owner == players[turn]:
-                    print(" " + countries[i].name)
+                    print(" " + countries[i].name + "+"*countries[i].developed)
             print()
         elif inp == "produce":
             for i in range(len(countries)):
@@ -284,12 +283,17 @@ while running:
             print("  tank:   20 steel")
             print("  fort:   10/15/20 wood")
         elif inp == "cards" or inp == "card":
-            print(" troops:  x 1.5")
+            print(" troops:  x  1")
             print(" food:    x 2.5")
             print(" wood:    x  3")
             print(" steel:   x  2")
             print(" oil:     x  2")
-            print(" uranium: x  1")
+            print(" uranium: x 1.5")
+        elif inp in ["event card", "event timer"]:
+            print(str(player_num - event_card + 1) + " more turns until an event card is drawn")
+        elif inp == "show development":
+            for i in range(len(countries)):
+                print(countries[i].name + ": " + countries[i].developed)
         elif inp == "q":
             running = False
         elif inp == "help":
@@ -298,6 +302,7 @@ while running:
             print(" [country name] to conquer a country")
             print(" [lose] to lose a country")
             print(" [lose many] to lose multiple countries")
+            print(" [gain many] to gain multiple countries")
             print(" [reset] to lose all countries")
             print(" [undo] to lose a country that was just obtained")
             print(" [countries] to see current player's countries")
@@ -307,9 +312,11 @@ while running:
             print(" [undevelop] to undevelop a country")
             print(" [nuke] to indicate a country has been nuked")
             print(" [cards] to see card conversion factors")
+            print(" [event card] to see turns until new event card is drawn")
             print(" [shop] to see shop")
             print(" [eliminate] to remove a player")
-            print(" [q] to quit")
+            print(" [show development]")
+            print(" [q] to quit") 
         else:
             country = guess_country(inp)
             if country in countries and country.owner != players[turn]:
